@@ -6,16 +6,34 @@ require 'tempfile'
 PREFERENCES = File.join(ENV['HOME'], 'Library', 'Preferences')
 PLISTS = File.join(PREFERENCES, '**', '*.plist')
 
-%w[defaults diff fswatch].each do |dependency|
+DOMAINS = Hash.new do |_, key|
+  key == '.GlobalPreferences' ? 'NSGlobalDomain' : key
+end
+
+%w[defaults diff fswatch system_profiler].each do |dependency|
   if `which #{dependency}`.length.zero?
     puts "Missing dependency: #{dependency}"
     exit 1
   end
 end
 
+# Try to get current host UUID.
+match = File.
+  popen(%w[system_profiler SPHardwareDataType]).
+  read.
+  match(/^\s*Hardware UUID:\s*(.+)$/)
+CURRENT_HOST_SUFFIX = '.' + (match && match[1]).to_s + '.plist'
+CURRENT_HOST_PREFIX = '-currentHost '
+
 def read(plist)
   # Swallow stderr; it's usually harmless.
-  stdout, stderr, status = Open3.capture3('defaults', 'read', plist)
+  if plist.start_with?(CURRENT_HOST_PREFIX)
+    stdout, stderr, status = Open3.capture3(
+      'defaults', '-currentHost', 'read', plist[CURRENT_HOST_PREFIX.length..-1]
+    )
+  else
+    stdout, stderr, status = Open3.capture3('defaults', 'read', plist)
+  end
   stdout
 end
 
@@ -23,12 +41,15 @@ def normalize(plist)
   plist = plist.chomp
   if plist !~ /\.plist\z/
     nil
-  elsif plist == File.join(PREFERENCES, '.GlobalPreferences.plist')
-    'NSGlobalDomain'
   elsif plist == File.join(PREFERENCES, File.basename(plist))
     # File is an immediate child of ~/Library/Preferences; return it sans the
     # ".plist" extension.
-    File.basename(plist, '.plist')
+    DOMAINS[File.basename(plist, '.plist')]
+  elsif plist == File.join(PREFERENCES, 'ByHost', File.basename(plist)) &&
+    plist.end_with?(CURRENT_HOST_SUFFIX)
+    # File is in ~/Library/Preferences/ByHost and matches the UUID of the
+    # current host.
+    CURRENT_HOST_PREFIX + DOMAINS[File.basename(plist).chomp(CURRENT_HOST_SUFFIX)]
   else
     plist
   end
