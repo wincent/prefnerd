@@ -19,13 +19,25 @@ def read(plist)
   stdout
 end
 
+def normalize(plist)
+  plist = plist.chomp
+  if plist !~ /\.plist\z/
+    nil
+  elsif File.basename(plist) == '.GlobalPreferences.plist'
+    'NSGlobalDomain'
+  else
+    plist
+  end
+end
+
 begin
   # Build up map of known defaults
   print 'Reading defaults: '
   DEFAULTS = {}
   Dir.glob(PLISTS, File::FNM_DOTMATCH).each do |plist|
+    plist = normalize(plist)
     print '.'
-    DEFAULTS[plist] = read(plist)
+    DEFAULTS[plist] = read(plist) if plist
   end
   puts
 
@@ -39,8 +51,8 @@ begin
     PREFERENCES,
   ])
   while line = lines.readline
-    plist = line.chomp
-    if plist =~ /\.plist\z/
+    plist = normalize(line)
+    if plist
       new_contents = read(plist)
       new_file = Tempfile.new('pn')
       new_file.write(new_contents)
