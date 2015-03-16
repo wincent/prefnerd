@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = 'prefnerd'
-  spec.version       = '0.1'
+  spec.version       = '0.2'
   spec.authors       = ['Greg Hurrell']
   spec.email         = ['greg@hurrell.net']
   spec.summary       = %q{Monitors the OS X defaults database for changes}
