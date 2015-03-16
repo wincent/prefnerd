@@ -6,6 +6,13 @@ require 'tempfile'
 PREFERENCES = File.join(ENV['HOME'], 'Library', 'Preferences')
 PLISTS = File.join(PREFERENCES, '**', '*.plist')
 
+%w[defaults diff fswatch].each do |dependency|
+  if `which #{dependency}`.length.zero?
+    puts "Missing dependency: #{dependency}"
+    exit 1
+  end
+end
+
 def read(plist)
   # Swallow stderr; it's usually harmless.
   stdout, stderr, status = Open3.capture3('defaults', 'read', plist)
