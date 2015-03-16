@@ -25,6 +25,10 @@ def normalize(plist)
     nil
   elsif plist == File.join(PREFERENCES, '.GlobalPreferences.plist')
     'NSGlobalDomain'
+  elsif plist == File.join(PREFERENCES, File.basename(plist))
+    # File is an immediate child of ~/Library/Preferences; return it sans the
+    # ".plist" extension.
+    File.basename(plist, '.plist')
   else
     plist
   end
