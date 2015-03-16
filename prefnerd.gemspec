@@ -16,5 +16,4 @@ Gem::Specification.new do |spec|
 
   spec.files         = Dir['bin/*']
   spec.executables   = ['pn']
-  spec.require_paths = []
 end
