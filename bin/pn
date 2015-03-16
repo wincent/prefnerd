@@ -23,7 +23,7 @@ def normalize(plist)
   plist = plist.chomp
   if plist !~ /\.plist\z/
     nil
-  elsif File.basename(plist) == '.GlobalPreferences.plist'
+  elsif plist == File.join(PREFERENCES, '.GlobalPreferences.plist')
     'NSGlobalDomain'
   else
     plist
