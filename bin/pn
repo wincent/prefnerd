@@ -37,6 +37,12 @@ def read(plist)
   stdout
 end
 
+def debug(string)
+  if ENV['DEBUG']
+    puts "DEBUG: #{string}"
+  end
+end
+
 def normalize(plist)
   plist = plist.chomp
   if plist !~ /\.plist\z/
@@ -76,7 +82,9 @@ begin
     PREFERENCES,
   ])
   while line = lines.readline
+    debug("fswatch -> #{line.inspect}")
     plist = normalize(line)
+    debug("normalized -> #{plist.inspect}")
     if plist
       new_contents = read(plist)
       new_file = Tempfile.new('pn')

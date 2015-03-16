@@ -41,6 +41,12 @@ gem build prefnerd.gemspec
 gem push prefnerd-0.1.gem
 ```
 
+To debug the in-development version:
+
+```sh
+DEBUG=1 bin/pn
+```
+
 # Future plans
 
 Right now prefnerd is implemented in the crudest and most unsophisticated way:
