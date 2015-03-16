@@ -36,7 +36,7 @@ begin
     '-m',
     'fsevents_monitor',
     '-r',
-    ENV['HOME'] + '/Library/Preferences',
+    PREFERENCES,
   ])
   while line = lines.readline
     plist = line.chomp
