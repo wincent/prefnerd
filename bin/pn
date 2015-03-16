@@ -12,43 +12,47 @@ def read(plist)
   stdout
 end
 
-# Build up map of known defaults
-print 'Reading defaults: '
-DEFAULTS = {}
-Dir.glob(PLISTS, File::FNM_DOTMATCH).each do |plist|
-  print '.'
-  DEFAULTS[plist] = read(plist)
-end
-puts
-
-puts 'Monitoring for changes... [hit CTRL-C to exit]'
-lines = File.popen([
-  'fswatch',
-  '-m',
-  'fsevents_monitor',
-  '-r',
-  ENV['HOME'] + '/Library/Preferences',
-])
-while line = lines.readline
-  plist = line.chomp
-  if plist =~ /\.plist\z/
-    new_contents = read(plist)
-    new_file = Tempfile.new('pn')
-    new_file.write(new_contents)
-    new_file.close
-
-    old_contents = DEFAULTS[plist] || ''
-    old_file = Tempfile.new('pn')
-    old_file.write(old_contents)
-    old_file.close
-
-    DEFAULTS[plist] = new_contents
-
-    # Output diff from before to after, but strip meaningless filename header
-    puts plist + ':'
-    puts(File.popen(['diff', '-u', old_file.path, new_file.path]).readlines[2..-1])
-
-    new_file.unlink
-    old_file.unlink
+begin
+  # Build up map of known defaults
+  print 'Reading defaults: '
+  DEFAULTS = {}
+  Dir.glob(PLISTS, File::FNM_DOTMATCH).each do |plist|
+    print '.'
+    DEFAULTS[plist] = read(plist)
   end
+  puts
+
+  # Start monitoring
+  puts 'Monitoring for changes... [hit CTRL-C to exit]'
+  lines = File.popen([
+    'fswatch',
+    '-m',
+    'fsevents_monitor',
+    '-r',
+    ENV['HOME'] + '/Library/Preferences',
+  ])
+  while line = lines.readline
+    plist = line.chomp
+    if plist =~ /\.plist\z/
+      new_contents = read(plist)
+      new_file = Tempfile.new('pn')
+      new_file.write(new_contents)
+      new_file.close
+
+      old_contents = DEFAULTS[plist] || ''
+      old_file = Tempfile.new('pn')
+      old_file.write(old_contents)
+      old_file.close
+
+      DEFAULTS[plist] = new_contents
+
+      # Output diff from before to after, but strip meaningless filename header
+      puts plist + ':'
+      puts(File.popen(['diff', '-u', old_file.path, new_file.path]).readlines[2..-1])
+
+      new_file.unlink
+      old_file.unlink
+    end
+  end
+rescue Interrupt
 end
