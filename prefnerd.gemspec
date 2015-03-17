@@ -3,6 +3,7 @@ Gem::Specification.new do |spec|
   spec.version       = '0.2'
   spec.authors       = ['Greg Hurrell']
   spec.email         = ['greg@hurrell.net']
+  spec.homepage      = 'https://github.com/wincent/prefnerd'
   spec.summary       = %q{Monitors the OS X defaults database for changes}
   spec.description   = %q{
     Are you an OS X prefnerd? Do you keep a base set of OS X preferences in
