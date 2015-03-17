@@ -19,10 +19,10 @@ Run `pn` from the terminal with no arguments.
 
 # Requirements
 
-prefnerd relies on two executables that are usually present on all OS X
-installs, `defaults` and `diff`, plus one that will generally have to be
-installed separately, `fswatch`. The simplest way to install this is usually via
-[Homebrew](http://brew.sh/):
+prefnerd relies on three executables that are usually present on all OS X
+installs &mdash; `defaults`, `diff` and `system_profiler` &mdash; plus one that
+will generally have to be installed separately, `fswatch`. The simplest way to
+install this is usually via [Homebrew](http://brew.sh/):
 
 ```sh
 brew install fswatch
@@ -35,7 +35,7 @@ tests, no Bundler, no Rakefile. To cut a new release, update the version
 number in the gemspec and:
 
 ```sh
-git tag -s 0.1 -m "0.1 release"
+git tag -s v0.1 -m "0.1 release"
 git push origin master
 gem build prefnerd.gemspec
 gem push prefnerd-0.1.gem
@@ -61,7 +61,7 @@ based on the diff output).
 
 # Author
 
-prefnerd was hacked together by Greg Hurrell <greg@hurrell.net>.
+prefnerd was hacked together by Greg Hurrell (<greg@hurrell.net>).
 
 # License
 
