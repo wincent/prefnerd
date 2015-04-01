@@ -1,3 +1,6 @@
+# prefnerd
+[![Gem Version](https://badge.fury.io/rb/prefnerd.svg)](http://badge.fury.io/rb/prefnerd)
+
 Are you an OS X prefnerd? Do you keep a base set of OS X preferences in version
 control to make it easier to set up new machines? Do you want to know which
 items are being changed, and to what values, whenever you alter a setting on OS
