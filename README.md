@@ -39,7 +39,7 @@ number in the gemspec and:
 
 ```sh
 git tag -s v0.1 -m "0.1 release"
-git push origin master
+git push --follow-tags origin master
 gem build prefnerd.gemspec
 gem push prefnerd-0.1.gem
 ```
