@@ -19,8 +19,7 @@ end
 
 # Try to get current host UUID.
 match = File.
-  popen(%w[system_profiler SPHardwareDataType]).
-  read.
+  popen(%w[system_profiler SPHardwareDataType]) { |f| f.read }.
   match(/^\s*Hardware UUID:\s*(.+)$/)
 CURRENT_HOST_SUFFIX = '.' + (match && match[1]).to_s + '.plist'
 CURRENT_HOST_PREFIX = '-currentHost '
@@ -100,7 +99,7 @@ begin
 
       # Output diff from before to after, but strip meaningless filename header
       puts plist + ':'
-      puts(File.popen(['diff', '-u', old_file.path, new_file.path]).readlines[2..-1])
+      puts(File.popen(['diff', '-u', old_file.path, new_file.path]) { |f| f.readlines[2..-1] })
 
       new_file.unlink
       old_file.unlink
