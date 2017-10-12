@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = 'prefnerd'
-  spec.version       = '0.2'
+  spec.version       = '1.0'
   spec.authors       = ['Greg Hurrell']
   spec.email         = ['greg@hurrell.net']
   spec.homepage      = 'https://github.com/wincent/prefnerd'
